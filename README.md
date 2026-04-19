@@ -6,7 +6,7 @@ Built as a teaching skeleton for the *Advanced Information Retrieval* course.
 
 The code is intentionally small. It walks through the full pipeline once
 (loading → indexing → retrieving → evaluating → writing TREC runs) and
-leaves a single, clearly marked **extension point** where you build your
+leaves a single, clearly marked **extension point**(at pipeline.py) where you build your
 own contribution on top of BM25.
 
 ---
@@ -32,21 +32,15 @@ and submit one TREC run file per snapshot to
 
 - Python 3.10+
 - Java 11+ (PyTerrier/Terrier needs a JVM — `java -version` to check)
-- ~50 GB free disk space for the full corpora + indexes
+- - If you have problems with this, check the FAQ at the end
+- ~20 GB free disk space for the full corpora + indexes
 
 ## 3. Install
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate              # Windows: .venv\Scripts\activate
+python -m venv venv
+source venv/bin/activate              # Windows (no shame): venv\Scripts\activate
 pip install -r requirements.txt
-```
-
-Verify:
-
-```bash
-python -c "import pyterrier as pt; print(pt.__version__)"
-ir_datasets_longeval list | grep longeval-sci-2026
 ```
 
 ## 4. Quick start — run the whole pipeline
@@ -54,8 +48,8 @@ ir_datasets_longeval list | grep longeval-sci-2026
 ```bash
 # 1. Build an index for each snapshot (first run downloads the corpus — this is slow!)
 python -m longeval_starter index --snapshot snapshot-1
-python -m longeval_starter index --snapshot snapshot-2
-python -m longeval_starter index --snapshot snapshot-3
+python -m longeval_starter index --snapshot snapshot-2 <-- we don't have the qrels yet, so stick to snapshot-1
+python -m longeval_starter index --snapshot snapshot-3 <-- we don't have the qrels yet, so stick to snapshot-1
 
 # 2. Sanity-check on the training qrels of snapshot-1
 python -m longeval_starter evaluate --snapshot snapshot-1
@@ -64,6 +58,7 @@ python -m longeval_starter evaluate --snapshot snapshot-1
 python -m longeval_starter retrieve --snapshot snapshot-1
 python -m longeval_starter retrieve --snapshot snapshot-2
 python -m longeval_starter retrieve --snapshot snapshot-3
+--> don't worry about retrieving now, just stick to evaluate and improve those metrics!!
 
 # Or do everything in one go:
 make all
@@ -126,8 +121,26 @@ longeval26-starter/
 ## 7. FAQ
 
 **PyTerrier complains that Java is missing.**
-Install a JDK (`sudo apt install openjdk-17-jdk` or `brew install openjdk`)
+Install a JDK (`sudo apt install openjdk-17-jdk` or `brew install openjdk@21`)
 and make sure `JAVA_HOME` is set.
+
+**PyTerrier still can't find Java on macOS even after `brew install`.**
+Homebrew doesn't symlink the JDK into the system location by default, this means java is on your PC, but Python can't find it.
+After installing, run (Apple Silicon):
+```bash
+sudo ln -sfn /opt/homebrew/opt/openjdk/libexec/openjdk.jdk \
+  /Library/Java/JavaVirtualMachines/openjdk.jdk
+```
+(Intel (old) Macs: replace `/opt/homebrew` with `/usr/local`.) Then add
+`export JAVA_HOME="$(/usr/libexec/java_home)"` to `~/.zprofile` or `~/.zshrc`,
+open a fresh terminal, reactivate the venv, and retry. If you'd rather
+not touch `sudo`, the [Eclipse Temurin](https://adoptium.net/)
+`.pkg` installer handles the symlink for you.
+Test if everything works with:
+```bash
+source .venv/bin/activate
+python -c "import pyterrier as pt; pt.java.init(); print('Java OK')"
+```
 
 **Indexing runs out of memory.**
 Lower `index.threads` in `config.yaml` to 1–2 and/or pass
@@ -140,6 +153,7 @@ put it on another disk.
 **Do I need to resubmit for every snapshot change?**
 No — TIRA wants one submission containing run files for all three
 snapshots. Just zip `runs/` together with `submission/ir-metadata.yml`.
+We will do this at the end of the project, so don't worry about it now.
 
 ---
 
