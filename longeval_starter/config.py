@@ -47,15 +47,19 @@ class Config:
         return str(self.raw["run"]["name"])
 
     # ----- dataset id helpers ---------------------------------------------------
-    def dataset_id(self, snapshot: str, *, with_qrels: bool = False) -> str:
+    def dataset_id(self, snapshot: str, *, with_qrels: bool = False, train: bool = False) -> str:
         """Return the ir-datasets-longeval identifier for a snapshot.
 
         >>> cfg.dataset_id("snapshot-1")
         'longeval-sci-2026/snapshot-1'
         >>> cfg.dataset_id("snapshot-1", with_qrels=True)
         'longeval-sci-2026/snapshot-1/dctr'
+        >>> cfg.dataset_id("snapshot-1", with_qrels=True, train=True)
+        'longeval-sci-2026/snapshot-1/train/dctr'
         """
         base = f"{self.dataset_prefix}/{snapshot}"
+        if train:
+            base = f"{base}/train"
         return f"{base}/{self.qrels_variant}" if with_qrels else base
 
     def index_path(self, snapshot: str) -> Path:

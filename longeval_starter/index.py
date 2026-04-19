@@ -28,6 +28,7 @@ def build_or_load_index(cfg: Config, snapshot: str) -> "pt.IndexRef":
 
     if props.exists():
         log.info("Re-using existing index at %s", index_path)
+        pt.java.init()
         return pt.IndexRef.of(str(props.resolve()))
 
     index_path.mkdir(parents=True, exist_ok=True)

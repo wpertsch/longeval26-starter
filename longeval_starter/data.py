@@ -45,9 +45,13 @@ def load_snapshot(cfg: Config, snapshot: str):
     return longeval_load(dsid)
 
 
-def load_snapshot_with_qrels(cfg: Config, snapshot: str):
-    """Same as :func:`load_snapshot` but forces the qrels variant from config."""
-    dsid = cfg.dataset_id(snapshot, with_qrels=True)
+def load_snapshot_with_qrels(cfg: Config, snapshot: str, *, train: bool = False):
+    """Same as :func:`load_snapshot` but forces the qrels variant from config.
+
+    Pass ``train=True`` to load the training split with released pseudo-qrels
+    (``snapshot-1/train/dctr``) rather than the withheld test qrels.
+    """
+    dsid = cfg.dataset_id(snapshot, with_qrels=True, train=train)
     log.info("Loading dataset %s", dsid)
     return longeval_load(dsid)
 

@@ -22,7 +22,7 @@ log = logging.getLogger(__name__)
 
 
 def evaluate(cfg: Config, snapshot: str):
-    dataset = load_snapshot_with_qrels(cfg, snapshot)
+    dataset = load_snapshot_with_qrels(cfg, snapshot, train=True)
     topics = load_topics(dataset)
     qrels = load_qrels(dataset)
 
