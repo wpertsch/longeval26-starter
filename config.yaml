@@ -1,0 +1,50 @@
+# ─── LongEval 2026 – Task 1 (Sci-Retrieval) – starter config ────────────────
+# Students: tweak values here instead of hard-coding them in the Python files.
+
+# ir-datasets-longeval identifiers. The three snapshots of the 2026 corpus
+# all live under the same prefix. The "qrels_variant" picks which pseudo
+# qrels (raw clicks vs DCTR) are returned by data.load_snapshot().
+dataset:
+  prefix: "longeval-sci-2026"
+  snapshots: ["snapshot-1", "snapshot-2", "snapshot-3"]
+  qrels_variant: "dctr"        # "raw" or "dctr"
+
+# Where to put the Terrier indexes and the TREC run files. Both are
+# created on first use; nothing needs to exist ahead of time.
+paths:
+  indexes: "indexes"
+  runs:    "runs"
+
+# Indexing settings. The PyTerrier defaults are fine for a course project —
+# turn threads down if you run into RAM issues.
+index:
+  threads: 4
+  # Fields of each document that get concatenated into the indexed text.
+  # The wrapper in data.py falls back to doc.default_text() if none of
+  # these exist on the ir_datasets document type.
+  text_fields: ["title", "abstract", "text"]
+  # How many documents PyTerrier should buffer before flushing.
+  meta_compress: true
+
+# BM25 retrieval settings. num_results = depth of the ranked list that
+# ends up in the TREC run file (TIRA's cutoff is typically 1000).
+retrieval:
+  wmodel: "BM25"
+  num_results: 1000
+  # Terrier controls: override BM25's k1/b here if you want to tune.
+  # See https://pyterrier.readthedocs.io/en/latest/terrier-retrieval.html
+  controls:
+    bm25.k_1: 1.2
+    bm25.b:   0.75
+
+# Evaluation metrics used by `evaluate` on the training qrels.
+# These are parsed via ir_measures, so anything ir_measures understands
+# is fair game (AP, RR, nDCG@k, R@k, …).
+evaluation:
+  metrics: ["nDCG@10", "nDCG@100", "AP", "RR", "R@1000"]
+
+# Metadata for your run — this is what ends up in the TREC run file's
+# tag column and in ir-metadata.yml.
+run:
+  name: "bm25-baseline"
+  team: "CHANGE-ME"

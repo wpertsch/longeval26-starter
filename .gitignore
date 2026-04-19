@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Terrier / PyTerrier artifacts
+indexes/
+runs/
+*.terrier
+
+# ir_datasets local cache (if symlinked into the project)
+.ir_datasets/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Outputs you don't want to commit
+*.log
+*.tmp

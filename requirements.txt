@@ -1,0 +1,13 @@
+# Core retrieval stack
+python-terrier>=0.12.0
+ir-datasets-longeval>=0.0.14
+
+# Config + evaluation helpers
+pyyaml>=6.0
+pandas>=2.0
+tqdm>=4.66
+ir-measures>=0.3
+
+# Optional but handy for notebooks / debugging
+# jupyter
+# matplotlib

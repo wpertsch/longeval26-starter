@@ -1,0 +1,76 @@
+# ir-metadata 0.1 description of your LongEval 2026 Task-1 submission.
+#
+# Template for the FSU Jena AIR course BM25 starter.
+# Replace every ENTER_VALUE_HERE before uploading to TIRA.
+#
+# Reference: https://www.ir-metadata.org/metadata/overview/
+# LongEval 2025 example skeleton:
+# https://github.com/clef-longeval/longeval-code/tree/main/clef25
+
+ir_metadata.start
+schema-version: 0.1
+run-version: 1.0
+
+# The tag MUST match the run_name that appears in the last column of your
+# run.txt.gz files (see config.yaml → run.name).
+tag: bm25-baseline
+
+actor:
+  team: ENTER_VALUE_HERE           # e.g. "Webis-FSU-Jena-AIR-2026"
+  members:
+    - name: ENTER_VALUE_HERE
+      email: ENTER_VALUE_HERE
+      affiliation: "Friedrich Schiller University Jena"
+      orcid: ENTER_VALUE_HERE      # optional
+
+research goal:
+  description: >-
+    Baseline retrieval system for the LongEval 2026 Sci-Retrieval task.
+    Plain BM25 over a per-snapshot Terrier index, without longitudinal
+    signals. Intended as a starting point that students extend.
+
+platform:
+  operating system: ENTER_VALUE_HERE         # e.g. "Ubuntu 24.04"
+  hardware:
+    cpu: ENTER_VALUE_HERE
+    ram: ENTER_VALUE_HERE
+    gpu: "none (BM25 baseline)"
+  software:
+    libraries:
+      - name: python-terrier
+        version: ENTER_VALUE_HERE
+      - name: ir-datasets-longeval
+        version: ENTER_VALUE_HERE
+
+implementation:
+  source:
+    lang: "Python 3.10+"
+    repository: ENTER_VALUE_HERE            # e.g. GitLab URL
+    commit: ENTER_VALUE_HERE                # short SHA
+  executable:
+    cmd: "python -m longeval_starter all"
+
+method:
+  automatic: true
+  indri query: false
+  retrieval method:
+    name: "BM25"
+    parameters:
+      k_1: 1.2
+      b: 0.75
+      num_results: 1000
+  reranking method:
+    name: "none"
+  interpretable: true
+
+data:
+  training data:
+    name: "longeval-sci-2026/snapshot-1"
+    qrels: "dctr"
+  test collection:
+    name: "longeval-sci-2026"
+    snapshots:
+      - "snapshot-1"
+      - "snapshot-2"
+      - "snapshot-3"
+ir_metadata.end
