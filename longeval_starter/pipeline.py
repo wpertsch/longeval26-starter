@@ -25,6 +25,8 @@ from __future__ import annotations
 
 import logging
 
+from typing import Any
+
 import pyterrier as pt
 
 from longeval_starter.config import Config
@@ -33,7 +35,7 @@ from longeval_starter.config import Config
 log = logging.getLogger(__name__)
 
 
-def build_pipeline(cfg: Config, index_ref: "pt.IndexRef") -> "pt.Transformer":
+def build_pipeline(cfg: Config, index_ref: Any) -> pt.Transformer:
     """Return the retrieval pipeline used for a snapshot.
 
     Parameters
@@ -58,7 +60,7 @@ def build_pipeline(cfg: Config, index_ref: "pt.IndexRef") -> "pt.Transformer":
         wmodel, num_results, controls,
     )
 
-    bm25 = pt.terrier.Retriever(
+    bm25 = pt.terrier.Retriever(  # type: ignore[attr-defined]
         index_ref,
         wmodel=wmodel,
         num_results=num_results,
