@@ -9,6 +9,8 @@ The code is intentionally small. It walks through the full pipeline once
 leaves a single, clearly marked **extension point**(at pipeline.py) where you build your
 own contribution on top of BM25.
 
+Paper from last year: https://downloads.webis.de/publications/papers/gruendel_2024.pdf
+
 ---
 
 ## 1. What LongEval-Sci asks of you
