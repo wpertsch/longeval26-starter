@@ -10,6 +10,7 @@ leaves a single, clearly marked **extension point**(at pipeline.py) where you bu
 own contribution on top of BM25.
 
 Paper from last year: https://downloads.webis.de/publications/papers/gruendel_2024.pdf
+Meta view of what we are doing: https://downloads.webis.de/publications/papers/froebe_2024a.pdf
 
 ---
 
