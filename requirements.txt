@@ -1,6 +1,7 @@
 # Core retrieval stack
 python-terrier>=0.12.0
 ir-datasets-longeval>=0.0.14
+pylate>=1.1
 
 # Config + evaluation helpers
 pyyaml>=6.0

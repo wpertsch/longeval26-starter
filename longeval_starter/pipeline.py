@@ -34,8 +34,10 @@ from longeval_starter.config import Config
 
 log = logging.getLogger(__name__)
 
+COLBERT_MODEL_PATH = "./colbert-longeval"
 
-def build_pipeline(cfg: Config, index_ref: Any) -> pt.Transformer:
+
+def build_pipeline(cfg: Config, index_ref: Any, snapshot: str = "snapshot-1") -> pt.Transformer:
     """Return the retrieval pipeline used for a snapshot.
 
     Parameters
@@ -56,8 +58,8 @@ def build_pipeline(cfg: Config, index_ref: Any) -> pt.Transformer:
     controls = dict(cfg.raw["retrieval"].get("controls") or {})
 
     log.info(
-        "Building pipeline: %s (num_results=%d, controls=%s)",
-        wmodel, num_results, controls,
+        "Building pipeline for %s: %s (num_results=%d, controls=%s)",
+        snapshot, wmodel, num_results, controls,
     )
 
     bm25 = pt.terrier.Retriever(  # type: ignore[attr-defined]
@@ -68,27 +70,22 @@ def build_pipeline(cfg: Config, index_ref: Any) -> pt.Transformer:
     )
 
     # ------------------------------------------------------------------
-    # TODO for students: extend the pipeline below.
+    # Pipeline 1 (active): BM25 + Bo1 query expansion
     # ------------------------------------------------------------------
-    # Some inspirations:
-    #
-    #   # Query expansion with Bo1
-    #   bm25_qe = bm25 >> pt.rewrite.Bo1QueryExpansion(index_ref) >> bm25
-    #   return bm25_qe
-    #
-    #   # Re-ranking the top-100 of BM25
-    #   from longeval_starter.data import load_snapshot
-    #   dataset = load_snapshot(cfg, snapshot)           # pass snapshot in!
-    #   text_pipeline = bm25 % 100 >> pt.text.get_text(dataset, "text")
-    #   return text_pipeline >> YourReranker()
-    #
-    #   # Longitudinal boosting from prior snapshots
-    #   dataset = load_snapshot(cfg, snapshot)
-    #   for prior in dataset.get_prior_datasets():
-    #       ...  # fetch prior qrels and boost
-    #
-    # Keep the return type as a Transformer with output columns
-    # (qid, docno, score, rank) — the CLI and evaluator rely on that.
-    # ------------------------------------------------------------------
+    bm25_qe = bm25 >> pt.rewrite.Bo1QueryExpansion(index_ref) >> bm25
+    # return bm25_qe
 
-    return bm25
+    # ------------------------------------------------------------------
+    # Pipeline 2: BM25 first-stage + ColBERT re-ranker
+    # Train the model first:  python train_colbert.py
+    # Then swap the return above for the one below.
+    # ------------------------------------------------------------------
+    from longeval_starter.data import load_snapshot
+    from longeval_starter.rerank import ColBERTReranker, LazyTextFetcher
+    dataset = load_snapshot(cfg, snapshot)
+    text_fields = list(cfg.raw["index"].get("text_fields", ["title", "abstract", "text"]))
+    return (
+        bm25 % 100
+        >> LazyTextFetcher(dataset, text_fields)
+        >> ColBERTReranker(COLBERT_MODEL_PATH)
+    )

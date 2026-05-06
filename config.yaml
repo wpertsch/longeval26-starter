@@ -35,7 +35,7 @@ retrieval:
   # See https://pyterrier.readthedocs.io/en/latest/terrier-retrieval.html
   controls:
     bm25.k_1: 1.2
-    bm25.b:   0.75
+    bm25.b:   0.85
 
 # Evaluation metrics used by `evaluate` on the training qrels.
 # These are parsed via ir_measures, so anything ir_measures understands

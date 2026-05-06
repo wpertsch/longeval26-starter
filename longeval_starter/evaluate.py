@@ -34,7 +34,7 @@ def evaluate(cfg: Config, snapshot: str):
         )
 
     index_ref = build_or_load_index(cfg, snapshot)
-    pipeline = build_pipeline(cfg, index_ref)
+    pipeline = build_pipeline(cfg, index_ref, snapshot)
 
     metrics = [ir_measures.parse_measure(m) for m in cfg.raw["evaluation"]["metrics"]]
 

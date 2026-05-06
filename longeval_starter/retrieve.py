@@ -31,7 +31,7 @@ def retrieve(cfg: Config, snapshot: str):
     topics = load_topics(dataset)
 
     index_ref = build_or_load_index(cfg, snapshot)
-    pipeline = build_pipeline(cfg, index_ref)
+    pipeline = build_pipeline(cfg, index_ref, snapshot)
 
     log.info("Retrieving %d topics on %s", len(topics), snapshot)
     results = pipeline.transform(topics)
